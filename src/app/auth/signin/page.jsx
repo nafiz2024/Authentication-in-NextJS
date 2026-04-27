@@ -1,8 +1,9 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { Check } from "@gravity-ui/icons";
+import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import Link from "next/link";
+import { useState } from "react";
 import {
   Button,
   Description,
@@ -15,12 +16,14 @@ import {
 import { toast } from "react-toastify";
 
 const inputClassName =
-  "h-13 rounded-2xl border border-white/10 bg-white px-4 text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20";
+  "h-13 w-full rounded-2xl border border-white/10 bg-white px-4 text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20";
 
 const labelClassName = "mb-2 text-sm font-medium text-slate-200";
 const fieldErrorClassName = "mt-2 text-sm text-rose-300";
 
 const SignInPage = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,7 +34,7 @@ const SignInPage = () => {
       email: userData.email,
       password: userData.password,
       rememberMe: true,
-      callbackURL: '/'
+      callbackURL: "/",
     });
 
     if (error) {
@@ -108,7 +111,7 @@ const SignInPage = () => {
               isRequired
               minLength={8}
               name="password"
-              type="password"
+              type={isVisible ? "text" : "password"}
               validate={(value) => {
                 if (value.length < 8) {
                   return "Password must be at least 8 characters";
@@ -117,11 +120,26 @@ const SignInPage = () => {
               }}
             >
               <Label className={labelClassName}>Password</Label>
-              <Input
-                name="password"
-                className={inputClassName}
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <Input
+                  name="password"
+                  type={isVisible ? "text" : "password"}
+                  className={`${inputClassName} pr-12`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  aria-label={isVisible ? "Hide password" : "Show password"}
+                  onClick={() => setIsVisible((current) => !current)}
+                  className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-700"
+                >
+                  {isVisible ? (
+                    <EyeSlash className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
               <Description className="mt-2 text-xs leading-6 text-slate-400">
                 Use the password you created during signup.
               </Description>

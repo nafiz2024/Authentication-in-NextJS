@@ -1,8 +1,9 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { Check } from "@gravity-ui/icons";
+import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import Link from "next/link";
+import { useState } from "react";
 import {
   Button,
   Description,
@@ -15,22 +16,35 @@ import {
 import { toast } from "react-toastify";
 
 const inputClassName =
-    "h-13 rounded-2xl border border-white/10 bg-white px-4 text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20";
+  "h-13 w-full rounded-2xl border border-white/10 bg-white px-4 text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20";
 
 const labelClassName = "mb-2 text-sm font-medium text-slate-200";
 const fieldErrorClassName = "mt-2 text-sm text-rose-300";
 
 const SignUpPage = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+
   const onSubmit = async (e) => {
     e.preventDefault();
+
     const formData = new FormData(e.currentTarget);
     const userData = Object.fromEntries(formData.entries());
+
+    if (userData.password !== userData.confirmPassword) {
+      toast.error("Passwords do not match.", {
+        position: "top-center",
+        autoClose: 4000,
+        theme: "colored",
+      });
+      return;
+    }
 
     const { data, error } = await authClient.signUp.email({
       name: userData.name,
       email: userData.email,
       password: userData.password,
-      callbackURL: '/'
+      callbackURL: "/",
     });
 
     if (error) {
@@ -39,6 +53,7 @@ const SignUpPage = () => {
         autoClose: 5000,
         theme: "colored",
       });
+      return;
     }
 
     if (data) {
@@ -65,7 +80,7 @@ const SignUpPage = () => {
               Please Sign Up
             </h1>
             <p className="mt-3 text-sm leading-7 text-slate-400">
-              A clean, focused account form with just the essentials.
+              Create your account with a clean, focused signup flow.
             </p>
           </div>
 
@@ -103,6 +118,7 @@ const SignUpPage = () => {
               />
               <FieldError className={fieldErrorClassName} />
             </TextField>
+
             <TextField
               isRequired
               name="email"
@@ -127,7 +143,7 @@ const SignUpPage = () => {
               isRequired
               minLength={8}
               name="password"
-              type="password"
+              type={isVisible ? "text" : "password"}
               validate={(value) => {
                 if (value.length < 8) {
                   return "Password must be at least 8 characters";
@@ -142,13 +158,71 @@ const SignUpPage = () => {
               }}
             >
               <Label className={labelClassName}>Password</Label>
-              <Input
-                name="password"
-                className={inputClassName}
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <Input
+                  name="password"
+                  type={isVisible ? "text" : "password"}
+                  className={`${inputClassName} pr-12`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  aria-label={isVisible ? "Hide password" : "Show password"}
+                  onClick={() => setIsVisible((current) => !current)}
+                  className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-700"
+                >
+                  {isVisible ? (
+                    <EyeSlash className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
               <Description className="mt-2 text-xs leading-6 text-slate-400">
                 Must be at least 8 characters with 1 uppercase and 1 number
+              </Description>
+              <FieldError className={fieldErrorClassName} />
+            </TextField>
+
+            <TextField
+              isRequired
+              minLength={8}
+              name="confirmPassword"
+              type={isConfirmVisible ? "text" : "password"}
+              validate={(value) => {
+                if (value.length < 8) {
+                  return "Confirm password must be at least 8 characters";
+                }
+                return null;
+              }}
+            >
+              <Label className={labelClassName}>Confirm Password</Label>
+              <div className="relative">
+                <Input
+                  name="confirmPassword"
+                  type={isConfirmVisible ? "text" : "password"}
+                  className={`${inputClassName} pr-12`}
+                  placeholder="Re-enter your password"
+                />
+                <button
+                  type="button"
+                  aria-label={
+                    isConfirmVisible
+                      ? "Hide confirm password"
+                      : "Show confirm password"
+                  }
+                  onClick={() => setIsConfirmVisible((current) => !current)}
+                  className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-700"
+                >
+                  {isConfirmVisible ? (
+                    <EyeSlash className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
+              <Description className="mt-2 text-xs leading-6 text-slate-400">
+                Re-type the same password to confirm your account setup.
               </Description>
               <FieldError className={fieldErrorClassName} />
             </TextField>
