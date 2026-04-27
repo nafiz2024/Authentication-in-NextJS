@@ -15,41 +15,40 @@ import {
 import { toast } from "react-toastify";
 
 const inputClassName =
-    "h-13 rounded-2xl border border-white/10 bg-white px-4 text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20";
+  "h-13 rounded-2xl border border-white/10 bg-white px-4 text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20";
 
 const labelClassName = "mb-2 text-sm font-medium text-slate-200";
 const fieldErrorClassName = "mt-2 text-sm text-rose-300";
 
-const SignUpPage = () => {
+const SignInPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
+
     const formData = new FormData(e.currentTarget);
     const userData = Object.fromEntries(formData.entries());
 
-    const { data, error } = await authClient.signUp.email({
-      name: userData.name,
+    const { data, error } = await authClient.signIn.email({
       email: userData.email,
       password: userData.password,
+      rememberMe: true,
       callbackURL: '/'
     });
 
     if (error) {
-      toast.error(`Error signing up: ${error.message}`, {
+      toast.error(`Error signing in: ${error.message}`, {
         position: "top-center",
         autoClose: 5000,
         theme: "colored",
       });
+      return;
     }
 
     if (data) {
-      toast.success(
-        "Sign up successful! Please check your email to verify your account.",
-        {
-          position: "top-center",
-          autoClose: 5000,
-          theme: "colored",
-        }
-      );
+      toast.success("Sign in successful!", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "colored",
+      });
     }
   };
 
@@ -59,50 +58,32 @@ const SignUpPage = () => {
         <div className="mx-auto max-w-md">
           <div className="mb-8 text-center">
             <div className="mb-4 inline-flex rounded-full border border-sky-400/20 bg-sky-400/10 px-4 py-1 text-xs font-medium uppercase tracking-[0.24em] text-sky-200">
-              Secure Access
+              Welcome Back
             </div>
             <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
-              Please Sign Up
+              Please Sign In
             </h1>
             <p className="mt-3 text-sm leading-7 text-slate-400">
-              A clean, focused account form with just the essentials.
+              Enter your email and password to access your account.
             </p>
           </div>
 
           <div className="mb-6 grid grid-cols-2 gap-2 rounded-full border border-white/10 bg-white/5 p-1.5">
             <Link
               href="/auth/signin"
-              className="flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-300 no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white"
+              className="flex h-11 w-full items-center justify-center rounded-full bg-sky-500 px-4 text-sm font-semibold text-slate-950 no-underline shadow-[0_8px_24px_rgba(14,165,233,0.3)] transition-transform duration-200"
             >
               Sign In
             </Link>
             <Link
               href="/auth/signup"
-              className="flex h-11 w-full items-center justify-center rounded-full bg-sky-500 px-4 text-sm font-semibold text-slate-950 no-underline shadow-[0_8px_24px_rgba(14,165,233,0.3)] transition-transform duration-200"
+              className="flex h-11 w-full items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-300 no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white"
             >
               Sign Up
             </Link>
           </div>
 
           <Form className="flex w-full flex-col gap-5" onSubmit={onSubmit}>
-            <TextField
-              isRequired
-              name="name"
-              validate={(value) => {
-                if (value.length < 3) {
-                  return "Name must be at least 3 characters";
-                }
-                return null;
-              }}
-            >
-              <Label className={labelClassName}>Name</Label>
-              <Input
-                name="name"
-                className={inputClassName}
-                placeholder="Write your name"
-              />
-              <FieldError className={fieldErrorClassName} />
-            </TextField>
             <TextField
               isRequired
               name="email"
@@ -132,12 +113,6 @@ const SignUpPage = () => {
                 if (value.length < 8) {
                   return "Password must be at least 8 characters";
                 }
-                if (!/[A-Z]/.test(value)) {
-                  return "Password must contain at least one uppercase letter";
-                }
-                if (!/[0-9]/.test(value)) {
-                  return "Password must contain at least one number";
-                }
                 return null;
               }}
             >
@@ -148,7 +123,7 @@ const SignUpPage = () => {
                 placeholder="Enter your password"
               />
               <Description className="mt-2 text-xs leading-6 text-slate-400">
-                Must be at least 8 characters with 1 uppercase and 1 number
+                Use the password you created during signup.
               </Description>
               <FieldError className={fieldErrorClassName} />
             </TextField>
@@ -176,4 +151,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default SignInPage;
