@@ -56,7 +56,10 @@ const SignInPage = () => {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
+    <main className="relative isolate flex min-h-[calc(100vh-6rem)] w-full items-center justify-center overflow-hidden px-4 py-10 sm:px-6">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.14),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(34,197,94,0.12),_transparent_26%),linear-gradient(180deg,_rgba(5,8,22,0.96)_0%,_rgba(9,14,30,0.98)_52%,_rgba(5,8,22,1)_100%)]" />
+      <div className="absolute left-[-7rem] top-24 -z-10 h-52 w-52 rounded-full bg-sky-500/10 blur-3xl" />
+      <div className="absolute right-[-8rem] bottom-12 -z-10 h-64 w-64 rounded-full bg-emerald-400/10 blur-3xl" />
       <div className="w-full max-w-xl rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.92),rgba(2,6,23,0.82))] p-6 shadow-[0_25px_90px_rgba(2,6,23,0.45)] backdrop-blur-xl sm:p-8">
         <div className="mx-auto max-w-md">
           <div className="mb-8 text-center">
