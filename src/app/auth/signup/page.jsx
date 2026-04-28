@@ -48,7 +48,10 @@ const SignUpPage = () => {
     });
 
     if (error) {
-      toast.error(`Error signing up: ${error.message}`, {
+      const errorMessage =
+        error.message || error.statusText || "Unable to sign up right now.";
+
+      toast.error(`Error signing up: ${errorMessage}`, {
         position: "top-center",
         autoClose: 5000,
         theme: "colored",

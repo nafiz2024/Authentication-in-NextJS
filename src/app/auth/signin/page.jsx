@@ -38,7 +38,10 @@ const SignInPage = () => {
     });
 
     if (error) {
-      toast.error(`Error signing in: ${error.message}`, {
+      const errorMessage =
+        error.message || error.statusText || "Unable to sign in right now.";
+
+      toast.error(`Error signing in: ${errorMessage}`, {
         position: "top-center",
         autoClose: 5000,
         theme: "colored",
