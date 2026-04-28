@@ -1,4 +1,12 @@
-import { auth } from "@/lib/auth";
-import { toNextJsHandler } from "better-auth/next-js";
+const handleAuthRequest = async (request) => {
+  const [{ getAuth }, { toNextJsHandler }] = await Promise.all([
+    import("@/lib/auth"),
+    import("better-auth/next-js"),
+  ]);
 
-export const { POST, GET } = toNextJsHandler(auth);
+  const { GET } = toNextJsHandler(getAuth());
+  return GET(request);
+};
+
+export const GET = handleAuthRequest;
+export const POST = handleAuthRequest;
